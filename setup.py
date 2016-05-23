@@ -31,7 +31,7 @@ if __name__ == '__main__':
           license='GPL 2',
           packages=find_packages(exclude=['scripts', 'rotcon/data']),
           package_data={'rotcon': ['data/*.pdb', 'data/*.dcd', 'data/*.dat']},
-          scripts=['scripts/convolve-mtss-rotamers.py'],
+          scripts=['scripts/convolve-mtss-rotamers.py', 'scripts/convolve-mtss-rotamers_pre.py'],
           classifiers=CLASSIFIERS,
           long_description=LONG_DESCRIPTION,
           zip_safe=True,
