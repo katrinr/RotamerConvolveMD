@@ -20,3 +20,5 @@ convolve-mtss-rotamers_pre.py \
     peptso.gro 
 
 
+diff reference_pre/peptso-xrd-47-rawDistances.dat dat/peptso-xrd-47-rawDistances.dat
+test $? -eq 0 && echo "Test PASSED" || echo "Test FAILED."
