@@ -109,6 +109,7 @@ class RotamerDistances(object):
            
             # define the atoms to measure the distances between
             rotamer1nitrogen = rotamersSite1.select_atoms("name N1")
+            rotamer1oxygen = rotamersSite1.select_atoms("name O1")
 
             # define the atoms to measure the distances between
             rotamer1All = rotamersSite1.select_atoms("all")
@@ -120,9 +121,11 @@ class RotamerDistances(object):
                         S1.write(rotamersSite1.atoms)
                         for nh in proteinHN:
                             atom = proteinHN.select_atoms('resid {}'.format(nh.resnum))
-                            (a, b, distance) = \
+                            (a, b, distance_nitrogen) = \
                                 MDAnalysis.analysis.distances.dist(rotamer1nitrogen, atom)
-                            distances.append([nh.resnum, distance[0]])
+                            (a, b, distance_oxygen) = \
+                                MDAnalysis.analysis.distances.dist(rotamer1oxygen, atom)
+                            distances.append([nh.resnum, np.mean([distance_nitrogen[0], distance_oxygen[0]])])
 
 
 
@@ -186,13 +189,13 @@ class RotamerDistances(object):
     def find_clashing_rotamers(self, fitted_rotamers, protein, site_resid):
         """Detect any rotamer that clashes with the protein."""
         # make a KD tree of the protein neighbouring atoms
-        proteinNotSite = protein.selectAtoms("protein and not name H* and not (resid " + str(site_resid) +
+        proteinNotSite = protein.select_atoms("protein and not name H* and not (resid " + str(site_resid) +
                                              " or (resid " + str(site_resid-1) + " and (name C or name O)) "
                                                                                  "or (resid " + str(site_resid+1)
                                              + " and name N))")
         proteinNotSiteLookup = KDNS.AtomNeighborSearch(proteinNotSite)
 
-        rotamerSel = fitted_rotamers.selectAtoms("not name H*")
+        rotamerSel = fitted_rotamers.select_atoms("not name H*")
 
         rotamer_clash = []
         for rotamer in fitted_rotamers.trajectory:
